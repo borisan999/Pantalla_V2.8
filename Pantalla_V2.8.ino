@@ -115,8 +115,8 @@
   };
   int duracion=50; //Duracion del sonido
   bool DEBUG=true;
-  bool PANTALLA_MAESTRA=false;
-  int VEL_LED=50;  
+  bool PANTALLA_MAESTRA=true;
+  int VEL_LED=600;  
 
   int duracion3=5; //Duracion del sonido
   int parlante =9;
@@ -131,9 +131,17 @@
   const byte numChars = 60;
   char receivedChars[numChars]; // an array to store the received data
   char charBuf2[250];
+  char charBuf3[16];
   boolean newData = false;
   int msnno=1;
-  
+  String chunk;
+  int mensaptr=0;
+  int msnlen=0;
+  char * item2;
+  char * item;
+  int combinedlen=0;
+  int back=0;
+  /*
   char mensaje1[] = " En caso de emergencia recuerde que el Hospital Universitario Mayor tiene dos puntos de encuentro: Uno ubicado en la rotonda de la entrada principal y el otro en el parqueadero de ambulancias sobre la carrera 30.";
   char mensaje2[] = " En caso de emergencia no use el ascensor. Utilice las escaleras mas cercanas y circule por la derecha.                   ";
   char mensaje3[] = " En caso de emergencia identifique al lider de evacuacion y brigadistas del area donde se encuentra y siga atentamente sus instrucciones.                   ";
@@ -151,26 +159,26 @@
   char mensaje15[] = " Estimado empleado y colaborador reduzca el riesgo de infecciones asociadas a la atencion en salud. Laveses las manos siempre.                   ";
   char mensaje16[] = " El modelo de atencion de Mederi se centra en el paciente y la familia feliz, prestando una atencion oportuna, segura, sostenible y garantizando la mejora continua.                   ";
   char mensaje17[] = " Estimado empleado y colaborador recuerde que una atencion limpia es una atencion segura. En Mederi nos lavamos las manos.                   ";
+  */
   
-  /*
-  String mensaje1 = " En caso de emergencia recuerde que el Hospital Universitario Mayor tiene dos puntos de encuentro: Uno ubicado en la rotonda de la entrada principal y el otro en el parqueadero de ambulancias sobre la carrera 30.                   ";
-  String mensaje2 = " En caso de emergencia no use el ascensor. Utilice las escaleras mas cercanas y circule por la derecha.                   ";
-  String mensaje3 = " En caso de emergencia identifique al lider de evacuacion y brigadistas del area donde se encuentra y siga atentamente sus instrucciones.                   ";
-  String mensaje4 = " En caso de cualquier emergencia que se presente en el Hospital Universitario Mayor, comuniquese desde cualquier telefono a la extension 4123. Identifiquese e informe el hecho que se presenta.                   ";
-  String mensaje5 = " En Mederi manejamos los residuos de forma adecuada. Recuerde que en la caneca gris solo se deben depositar los residuos reciclables: papel seco, carton, periodico.                   ";
-  String mensaje6 = " En Mederi manejamos los residuos de forma adecuada. Recuerde que en la caneca verde solo se deben depositar los residuos no reciclables, tales como toallas para el secado de manos, empaques de alimentos y restos de comida.                   ";
-  String mensaje7 = " La higiene de manos en los hospitales ha salvado millones de vidas. En Mederi nos lavamos las manos.                   ";
-  String mensaje8 = " El 80 porciento de las infecciones pueden ser evitadas por medio de una buena higiene de manos. En Mederi nos lavamos las manos.                   ";
-  String mensaje9 = " Estimado empleado y colaborador recuerde y practique siempre los cinco momentos para la higiene de manos.                   ";
-  String mensaje10 = " Estimado empleado y colaborador recuerde que en Mederi todos cuidamos de las instalaciones. Por favor informe oportunamente a mantenimiento los danos que se presenten en equipos e infraestructura.                   ";
-  String mensaje11 = " En Mederi todos cuidamos de las instalaciones. Por favor cuide las zonas verdes y no arroje papeles en ellas.                   ";
-  String mensaje12 = " En Mederi todos cuidamos de las instalaciones y los recursos disponibles. Por favor no se siente en las canecas y haga uso racional del agua y la luz.                   ";
-  String mensaje13 = " Estimado empleado y colaborador recuerde que en Mederi todos cuidamos de las instalaciones. Por favor mantenga los puestos de trabajo en adecuadas condiciones de orden y aseo.                   ";
-  String mensaje14 = " En Mederi todos cuidamos de las instalaciones. Recuerde que no esta permitido fumar en las instalaciones de los hospitales ni arrojar colillas de cigarrillo.                   ";
-  String mensaje15 = " Estimado empleado y colaborador reduzca el riesgo de infecciones asociadas a la atencion en salud. Laveses las manos siempre.                   ";
-  String mensaje16 = " El modelo de atencion de Mederi se centra en el paciente y la familia feliz, prestando una atencion oportuna, segura, sostenible y garantizando la mejora continua.                   ";
-  String mensaje17 = " Estimado empleado y colaborador recuerde que una atencion limpia es una atencion segura. En Mederi nos lavamos las manos.                   ";
-    */
+  String mensaje1 = "En caso de emergencia recuerde que el Hospital Universitario Mayor tiene dos puntos de encuentro: Uno ubicado en la rotonda de la entrada principal y el otro en el parqueadero de ambulancias sobre la carrera 30.                    ";
+  String mensaje2 = "En caso de emergencia no use el ascensor. Utilice las escaleras mas cercanas y circule por la derecha.                   ";
+  String mensaje3 = "En caso de emergencia identifique al lider de evacuacion y brigadistas del area donde se encuentra y siga atentamente sus instrucciones.                   ";
+  String mensaje4 = "En caso de cualquier emergencia que se presente en el Hospital Universitario Mayor, comuniquese desde cualquier telefono a la extension 4123. Identifiquese e informe el hecho que se presenta.                   ";
+  String mensaje5 = "En Mederi manejamos los residuos de forma adecuada. Recuerde que en la caneca gris solo se deben depositar los residuos reciclables: papel seco, carton, periodico.                   ";
+  String mensaje6 = "En Mederi manejamos los residuos de forma adecuada. Recuerde que en la caneca verde solo se deben depositar los residuos no reciclables, tales como toallas para el secado de manos, empaques de alimentos y restos de comida.                   ";
+  String mensaje7 = "La higiene de manos en los hospitales ha salvado millones de vidas. En Mederi nos lavamos las manos.                   ";
+  String mensaje8 = "El 80 porciento de las infecciones pueden ser evitadas por medio de una buena higiene de manos. En Mederi nos lavamos las manos.                   ";
+  String mensaje9 = "Estimado empleado y colaborador recuerde y practique siempre los cinco momentos para la higiene de manos.                   ";
+  String mensaje10 = "Estimado empleado y colaborador recuerde que en Mederi todos cuidamos de las instalaciones. Por favor informe oportunamente a mantenimiento los danos que se presenten en equipos e infraestructura.                   ";
+  String mensaje11 = "En Mederi todos cuidamos de las instalaciones. Por favor cuide las zonas verdes y no arroje papeles en ellas.                   ";
+  String mensaje12 = "En Mederi todos cuidamos de las instalaciones y los recursos disponibles. Por favor no se siente en las canecas y haga uso racional del agua y la luz.                   ";
+  String mensaje13 = "Estimado empleado y colaborador recuerde que en Mederi todos cuidamos de las instalaciones. Por favor mantenga los puestos de trabajo en adecuadas condiciones de orden y aseo.                   ";
+  String mensaje14 = "En Mederi todos cuidamos de las instalaciones. Recuerde que no esta permitido fumar en las instalaciones de los hospitales ni arrojar colillas de cigarrillo.                   ";
+  String mensaje15 = "Estimado empleado y colaborador reduzca el riesgo de infecciones asociadas a la atencion en salud. Laveses las manos siempre.                   ";
+  String mensaje16 = "El modelo de atencion de Mederi se centra en el paciente y la familia feliz, prestando una atencion oportuna, segura, sostenible y garantizando la mejora continua.                   ";
+  String mensaje17 = "Estimado empleado y colaborador recuerde que una atencion limpia es una atencion segura. En Mederi nos lavamos las manos.                   ";
+   
   void setup(){
     delay(3000);
     pinMode(parlante,LOW); 
@@ -188,6 +196,33 @@
     RTC.begin(); 
     Serial.begin(9600); 
   }
+int speakerPin = 9;
+int length = 15; // the number of notes
+
+//twinkle twinkle little star
+char notes[] = "ccggaag ffeeddc ggffeed ggffeed ccggaag ffeeddc "; // a space represents a rest
+int beats[] = { 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 4 };
+int tempo = 300;
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 1000L; i += tone * 2) {
+    digitalWrite(speakerPin, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(speakerPin, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+void playNote(char note, int duration) {
+  char names[] = { 'c', 'd', 'e', 'f', 'g', 'a', 'b', 'C' };
+  int tones[] = { 1915, 1700, 1519, 1432, 1275, 1136, 1014, 956 };
+  
+  // play the tone corresponding to the note name
+  for (int i = 0; i < 8; i++) {
+    if (names[i] == note) {
+      playTone(tones[i], duration);
+    }
+  }
+}
   
   void codigoazul()
   { 
@@ -201,6 +236,16 @@
     duracion3;   
     tone(9,1540,240);
     duracion3; 
+    /*for (int i = 0; i < length; i++) {
+    if (notes[i] == ' ') {
+      delay(beats[i] * tempo); // rest
+    } else {
+      playNote(notes[i], beats[i] * tempo);
+    }
+    
+    // pause between notes
+    delay(tempo / 2); 
+  }*/
     ////////////SECCION PARA LAMPARA //////////////////
     digitalWrite(lamparaazul, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay(500);              // wait for a second
@@ -215,6 +260,7 @@
     {
       memset(receivedChars, 0, sizeof(receivedChars));
       cont++;
+      mensaptr=0;
       if(DEBUG==true)
       {
         Serial.println("Recive 1");
@@ -268,70 +314,527 @@
     }// FIN de Protocolo para lectura de datos
     if(receivedChars[0] == 'm')//codigo m, imprime mensajes
     {
-      /*m.clear();*/
-      //printString("                       ");
-      m.setIntensity(2);  
+      if(DEBUG == true)
+       {
+         Serial.println("enra en m");
+         delay(50);
+       }
+      m.setIntensity(6);  
       newData = false;   
       if(msnno==1)
       {
-          //chunk = mensaje1.substring(mensaptr*10);
-          //chunk.toCharArray(charBuf, 11);
-        //mensaje1.toCharArray(charBuf2, 250);
-        memcpy(charBuf2, mensaje1, sizeof(charBuf2));
-          /*if((mensaptr*10)>=mensaje1.length())
-          {
-            reiniciomsn();
-          }*/
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje1.length(); i++) {
+          if (mensaje1.substring(i, i+1) == " ") {
+            String palabra=mensaje1.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                //reiniciomsn();
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==2){
-          //chunk = mensaje2.substring(mensaptr*10);
-          //chunk.toCharArray(charBuf, 11);
-        //mensaje2.toCharArray(charBuf2, 250);
-        memcpy(charBuf2, mensaje2, sizeof(charBuf2));
-          }else if(msnno==3){
-          //chunk = mensaje3.substring(mensaptr*10);
-          //chunk.toCharArray(charBuf, 11);
-          memcpy(charBuf2, mensaje3, sizeof(charBuf2));
-        //mensaje3.toCharArray(charBuf2, 250);
-      }/*else if(msnno==4){
-        mensaje4.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje2.length(); i++) {
+          if (mensaje2.substring(i, i+1) == " ") {
+            String palabra=mensaje2.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                //reiniciomsn();
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
+      }else if(msnno==3){
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje3.length(); i++) {
+          if (mensaje3.substring(i, i+1) == " ") {
+            String palabra=mensaje3.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
+      }else if(msnno==4){
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje4.length(); i++) {
+          if (mensaje4.substring(i, i+1) == " ") {
+            String palabra=mensaje4.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==5){
-        mensaje5.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje5.length(); i++) {
+          if (mensaje5.substring(i, i+1) == " ") {
+            String palabra=mensaje5.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==6){
-        mensaje6.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje6.length(); i++) {
+          if (mensaje6.substring(i, i+1) == " ") {
+            String palabra=mensaje6.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==7){
-        mensaje7.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje7.length(); i++) {
+          if (mensaje7.substring(i, i+1) == " ") {
+            String palabra=mensaje7.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==8){
-        mensaje8.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje8.length(); i++) {
+          if (mensaje8.substring(i, i+1) == " ") {
+            String palabra=mensaje8.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==9){
-        mensaje9.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje9.length(); i++) {
+          if (mensaje9.substring(i, i+1) == " ") {
+            String palabra=mensaje9.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==10){
-        mensaje10.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje10.length(); i++) {
+          if (mensaje10.substring(i, i+1) == " ") {
+            String palabra=mensaje10.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(1000);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==11){
-        mensaje11.toCharArray(charBuf2, 250);
+        combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje11.length(); i++) {
+          if (mensaje11.substring(i, i+1) == " ") {
+            String palabra=mensaje11.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==12){
-        mensaje12.toCharArray(charBuf2, 250);
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje12.length(); i++) {
+          if (mensaje12.substring(i, i+1) == " ") {
+            String palabra=mensaje12.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==13){
-        mensaje13.toCharArray(charBuf2, 250);
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje13.length(); i++) {
+          if (mensaje13.substring(i, i+1) == " ") {
+            String palabra=mensaje13.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==14){
-        mensaje14.toCharArray(charBuf2, 250);
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje14.length(); i++) {
+          if (mensaje14.substring(i, i+1) == " ") {
+            String palabra=mensaje14.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==15){
-        mensaje15.toCharArray(charBuf2, 250);
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje15.length(); i++) {
+          if (mensaje15.substring(i, i+1) == " ") {
+            String palabra=mensaje15.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==16){
-        mensaje16.toCharArray(charBuf2, 250);
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje16.length(); i++) {
+          if (mensaje16.substring(i, i+1) == " ") {
+            String palabra=mensaje16.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }else if(msnno==17){
-        mensaje17.toCharArray(charBuf2, 250);
-      }*/
-      printStringWithShift(charBuf2,VEL_LED); 
-      msnno++;
-      delay(100);
-      if(msnno>=4)
-      {
-        msnno=1;
+      combinedlen=0;
+        int palabraant=0;
+        String msnpant="";
+        for (int i = 0; i < mensaje17.length(); i++) {
+          if (mensaje17.substring(i, i+1) == " ") {
+            String palabra=mensaje17.substring(palabraant, i);
+            palabraant = i+1;
+            combinedlen=combinedlen+palabra.length()+1;
+            if(combinedlen>=15)
+            {
+              combinedlen=0;
+              msnpant.toCharArray(charBuf3, 16);
+              printString("                       ");
+              printString(charBuf3);
+              delay(VEL_LED);
+              printString("                       ");
+              memcpy(charBuf3, 0, sizeof(charBuf3));
+              msnpant="";
+              combinedlen=combinedlen+palabra.length()+1;
+              if(Serial1.available() > 0)
+              {
+                break;
+              }
+            }
+            msnpant.concat(palabra);
+            msnpant.concat(" ");
+          }
+        }
+        reiniciomsn(); 
       }
-      printString("                       ");
-      //memset(charBuf2, 0, sizeof(charBuf2));
-      //memset(receivedChars, 0, sizeof(receivedChars));
-      //reiniciomsn();
     }
     if(newData == true)// Imprime en pantalla segun el caso
     {
@@ -385,19 +888,7 @@
     }
   } //fin del loop 
   
-  void printCharWithShift(char c, int shift_speed ){    // Imprime caracter con corrimiento
-    if (c < 32) 
-      return;  
-    c -= 32;
-    memcpy_P(buffer, CH + 7*c, 7); 
-    m.writeSprite(maxInUse*8, 0, buffer);
-    m.setColumn(maxInUse*8 + buffer[0], 0); /*tomar el espacio entre caracteres*/
-    for (int i=0; i<buffer[0]+1; i++)  
-    {  
-      delay(shift_speed);  
-      m.shiftLeft(false, false); 
-    } 
-  }
+
     
   void printStringWithShift(char* s, int shift_speed)
   {        // Imprime cadena de caracteres de mensajes en este micro 
@@ -405,11 +896,7 @@
     {
       printCharWithShift(*s, shift_speed); 
       s++;
-      if(Serial1.available() > 0)
-      {
-        //reiniciomsn();
-        break;
-      }
+     
     }  
   }
 
@@ -427,8 +914,21 @@
       s++;
     }
   }
+  void printCharWithShift(char c, int shift_speed ){    // Imprime caracter con corrimiento
+    if (c < 32) 
+      return;  
+    c -= 32;
+    memcpy_P(buffer, CH + 7*c, 7); 
+    m.writeSprite(maxInUse*8, 0, buffer);
+    m.setColumn(maxInUse*8 + buffer[0], 0); /*tomar el espacio entre caracteres*/
+    for (int i=0; i<buffer[0]+1; i++)  
+    {  
+      delay(shift_speed);  
+      m.shiftLeft(false, false); 
+    } 
+  }
 
-       
+  /*     
   void hora() // Imprime hora en pantalla
   { 
     DateTime now = RTC.now();
@@ -437,17 +937,18 @@
     m.setIntensity(8);            
     printString(TimeNow);                     
     delay(50);
-  }
+  }*/
 
   void reiniciomsn(){
+    printString("                       ");
     memset(receivedChars, 0, sizeof(receivedChars));
-    delay(2000); 
-    m.clear();
+    delay(50); 
     msnno++;
     if(msnno>=18)
     {
-      msnno=0;
+      msnno=1;
     }
+    return;
   }
   void recvWithEndMarker() {//recibe datos por serial
     static byte ndx = 0;
